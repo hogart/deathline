@@ -1,0 +1,30 @@
+{
+  "name": "pushkin-tg",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "start": "npm run build:live",
+    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@types/lodash.template": "^4.4.3",
+    "@types/ms": "^0.7.30",
+    "lodash.template": "^4.4.0",
+    "ms": "^2.0.0",
+    "telegraf": "^3.12.1",
+    "telegraf-session-local": "0.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.31",
+    "nodemon": "^1.12.1",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.5.3"
+  },
+  "typings": "./typings/telegraf.d.ts"
+}

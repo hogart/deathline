@@ -1,0 +1,4 @@
+node_modules
+game_db.json
+games/*.json
+!**games/pushkin.json
