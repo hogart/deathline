@@ -11,8 +11,9 @@ It's still in very early stages, but should work.
 
 * Clone project or download project
 * Run `npm install` in project dir
-* Get bot token from [@BotFather](https://telegram.me/botfather) and insert it as first parameter into `createBot('', 'game_db.json');` call in `index.ts`
-* `npm start`
+* Get bot token from [@BotFather](https://telegram.me/botfather)
+* Create file named `.env` containing `BOT_TOKEN = <place your token here (no angle brackets)>`
+* Run `npm start`
 
 ## 🎮 Creating games
 
@@ -20,7 +21,7 @@ Test game is located in `games/pushkin.json` (Russian only at the moment). Also 
 
 ## ⌨️ Contributing
 
-Feature requests and bug reports are welcome, as well as sample games. As for code, please use .editorconfig and make sure your code is compiling. And be nice:)
+Feature requests and bug reports are welcome, as well as sample games. As for code, please use `.editorconfig` and make sure your code is compiling. And be nice:)
 
 ## MIT License
 

@@ -1,5 +1,6 @@
 import Telegraf = require('telegraf');
 import ms = require('ms');
+import dotenv = require('dotenv');
 import { createBot } from './lib/createBot';
 import { loadGame } from './lib/loadGame';
 import { renderCue } from './lib/renderCue';
@@ -10,7 +11,9 @@ import { isValidChoice } from './lib/isValidChoice';
 import { createUser } from './lib/createUser';
 import { cuePrefix, waitingMsg } from './constants';
 
-const bot = createBot('', 'game_db.json');
+dotenv.config();
+
+const bot = createBot(process.env.BOT_TOKEN as string, 'game_db.json');
 
 loadGame().then((game) => {
     const timeOutManager = new TimeOutManager();
