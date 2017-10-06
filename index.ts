@@ -15,7 +15,7 @@ dotenv.config();
 
 const bot = createBot(process.env.BOT_TOKEN as string, 'game_db.json');
 
-loadGame().then((game) => {
+loadGame(process.env.GAME_NAME).then((game) => {
     const timeOutManager = new TimeOutManager();
 
     bot.command('/help', (ctx) => {

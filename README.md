@@ -19,6 +19,8 @@ It's still in very early stages, but should work.
 
 Test game is located in `games/pushkin.json` (Russian only at the moment). Also take a look at `lib/deathline.ts`, it contains interfaces and types for game.
 
+Place your game at `games/your_game.json` and run it by adding `GAME_NAME = your_game` to `.env` file.
+
 ## ⌨️ Contributing
 
 Feature requests and bug reports are welcome, as well as sample games. As for code, please use `.editorconfig` and make sure your code is compiling. And be nice:)
