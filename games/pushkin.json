@@ -1,6 +1,12 @@
 {
   "title": "Ай да сукин сын!..",
   "description": "Тестовая игра про Наше Всё. Используйте команду /restart, чтобы начать игру заново.",
+  "settings": {
+      "markdown": true,
+      "templateSettings": {},
+      "restartRequest": "Вы действительно хотите начать игру заново?",
+      "restartConfirmation": "Да, начать заново"
+  },
   "state": {},
   "start": "1",
   "cues": {

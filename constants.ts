@@ -1,2 +1,4 @@
 export const cuePrefix = /^\/cue:/;
-export const waitingMsg = '⏳';
+export const restartRequest = 'Restart?';
+export const restartConfirmation = 'Confirm';
+export const waitingMessage = '⏳';

@@ -1,6 +1,10 @@
 import Timer = NodeJS.Timer;
 import { IDict } from './deathline';
 
+/**
+ * Node.js setTimeout returns complex object with circular references.
+ * To be able to save timeouts to session, we need to manage timeouts buy some numeric id.
+ */
 export class TimeOutManager {
     private timeouts: IDict<Timer>;
     private counter: number;

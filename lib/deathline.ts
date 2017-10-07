@@ -44,6 +44,22 @@ interface ICue {
     choices?: IChoice[];
 }
 
+export interface ITemplateSettings<T> {
+    escape?: T;
+    evaluate?: T;
+    interpolate?: T;
+}
+
+export interface IGameSettings {
+    /** Use markdown (otherwise HTML) */
+    markdown?: boolean;
+    /** _.template settings */
+    templateSettings?: ITemplateSettings<string>;
+    restartRequest?: string;
+    restartConfirmation?: string;
+    waitingMessage?: string;
+}
+
 export interface IGame {
     /** initial game state */
     state: TState;
@@ -51,6 +67,8 @@ export interface IGame {
     title: string;
     /** game description, for help */
     description: string;
+    /** various engine settings */
+    settings: IGameSettings;
     /** starting cue */
     start: string;
     /** cues */
