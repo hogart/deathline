@@ -1,5 +1,5 @@
-import { readFile as _readFile} from 'fs'
-import * as util from 'util'
+import { readFile as _readFile} from 'fs';
+import * as util from 'util';
 import { IGame } from './deathline';
 
 const readFile = util.promisify(_readFile);

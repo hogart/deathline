@@ -5,5 +5,5 @@ export function createUser(game: IGame): IUser {
     return {
         state: clone(game.state),
         currentId: game.start,
-    }
+    };
 }

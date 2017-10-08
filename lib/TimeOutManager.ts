@@ -14,7 +14,7 @@ export class TimeOutManager {
         this.counter = 0;
     }
 
-    set(cb: Function, delay: number, ...args: any[]): number {
+    public set(cb: Function, delay: number, ...args: any[]): number {
         const id = this.counter;
         const t: Timer = setTimeout(() => {
             this.clear(id);
@@ -27,7 +27,7 @@ export class TimeOutManager {
         return id;
     }
 
-    clear(id: number): void {
+    public clear(id: number): void {
         clearTimeout(this.timeouts[id]);
         delete this.timeouts[id];
     }

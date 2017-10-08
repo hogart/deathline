@@ -1,7 +1,7 @@
 import Telegraf = require('telegraf');
 import template = require('lodash.template');
-import { IChoice, IDict, IGame, ITemplateSettings, IUser } from './deathline';
 import { TemplateExecutor } from 'lodash';
+import { IChoice, IDict, IGame, ITemplateSettings, IUser } from './deathline';
 import { restartConfirmation, restartRequest, waitingMessage } from '../constants';
 
 interface IButton {
@@ -10,7 +10,7 @@ interface IButton {
 }
 
 interface IReply {
-    message: string,
+    message: string;
     buttons?: any;
 }
 
@@ -76,7 +76,7 @@ export class Renderer {
     private inlineKeyboard(buttons: IButton[]): any {
         return this.markupRenderer().markup((m: any) => {
             return m.inlineKeyboard(
-                buttons.map(button => this.button(button, m))
+                buttons.map((button) => this.button(button, m))
             );
         });
     }
@@ -87,14 +87,14 @@ export class Renderer {
                 this.button(
                     {
                         label: this.template(choice.label, user.state),
-                        action: `/cue:${choice.id}`
+                        action: `/cue:${choice.id}`,
                     },
                     m
                 )
             );
 
             return m.inlineKeyboard(buttons);
-        })
+        });
     }
 
     public cue(user: IUser): IReply {
@@ -105,7 +105,7 @@ export class Renderer {
         return {
             message,
             buttons,
-        }
+        };
     }
 
     public help(user?: IUser): string {
@@ -122,13 +122,13 @@ export class Renderer {
         );
         const buttons = this.inlineKeyboard([{
             label: this.template(this.restartConfirmation, user.state),
-            action: '/restart'
+            action: '/restart',
         }]);
 
         return {
             message,
             buttons,
-        }
+        };
     }
 
     public waiting(user: IUser): IReply {
@@ -139,6 +139,6 @@ export class Renderer {
 
         return {
             message,
-        }
+        };
     }
 }

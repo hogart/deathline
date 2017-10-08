@@ -28,6 +28,7 @@ loadGame(process.env.GAME_NAME).then((game) => {
         const username = ctx.from.username;
         if (ctx.session[username]) {
             const {message, buttons} = renderer.restart(ctx.session[username]);
+
             return ctx.reply(message, buttons);
         } else {
             ctx.session[username] = createUser(game);
@@ -62,6 +63,7 @@ loadGame(process.env.GAME_NAME).then((game) => {
             const renderReply = () => {
                 user.currentId = choice.id;
                 const {message, buttons} = renderer.cue(ctx.session[username]);
+
                 return ctx.reply(message, buttons);
             };
 
@@ -78,9 +80,4 @@ loadGame(process.env.GAME_NAME).then((game) => {
 
     bot.startPolling();
     console.log('Bot started polling');
-}).catch(e => console.error(e));
-
-
-
-
-
+}).catch((e) => console.error(e));

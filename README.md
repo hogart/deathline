@@ -23,7 +23,8 @@ Place your game at `games/your_game.json` and run it by adding `GAME_NAME = your
 
 ## ⌨️ Contributing
 
-Feature requests and bug reports are welcome, as well as sample games. As for code, please use `.editorconfig` and make sure your code is compiling. And be nice:)
+Feature requests and bug reports are welcome, as well as sample games. 
+As for code, please make sure your code follows `.editorconfig`, passes `npm run lint` (`npm run lint:fix` if needed) and is compiling. Also be nice:)
 
 ## MIT License
 

@@ -7,7 +7,8 @@
   "scripts": {
     "start": "npm run build:live",
     "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "tslint --project tsconfig.json",
+    "lint:fix": "tslint --project tsconfig.json --fix"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +27,7 @@
     "@types/node": "^8.0.31",
     "nodemon": "^1.12.1",
     "ts-node": "^3.3.0",
+    "tslint": "^5.7.0",
     "typescript": "^2.5.3"
   },
   "typings": "./typings/telegraf.d.ts"
