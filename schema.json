@@ -1,0 +1,104 @@
+{
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "title": "Deathline",
+    "description": "Deathline game JSON Schema",
+    "type": "object",
+
+    "properties": {
+        "title": {
+            "type": "string",
+            "description": "Game title"
+        },
+        "description": {
+            "type": "string",
+            "description": "Game description, shown on /help"
+        },
+
+        "settings": { "$ref": "#/definitions/IGameSettings" },
+
+        "state": {
+            "type": "object",
+            "description": "Game state, variables to use while rendering messages"
+        },
+        "start": {
+            "type": "string",
+            "description": "id of starting cue"
+        },
+        "cues": {
+            "type": "object",
+            "description": "Game cues",
+            "additionalProperties": {"$ref": "#/definitions/ICue"}
+        }
+    },
+    "required": ["title", "description", "settings", "start", "cues", "state"],
+    "additionalProperties": false,
+
+    "definitions": {
+        "IGameSettings": {
+            "type": "object",
+            "description": "Various game settings",
+            "properties": {
+                "markdown": {
+                    "type": "boolean",
+                    "description": "Use markdown or HTML for message formatting"
+                },
+                "templateSettings": {
+                    "type": "object",
+                    "description": "Settings for _.template"
+                },
+                "restartRequest": {
+                    "type": "string",
+                    "description": "Message to show when asking user if they want to restart game"
+                },
+                "restartConfirmation": {
+                    "type": "string",
+                    "description": "Label for restart confirmation button"
+                }
+            },
+            "required": ["markdown"]
+        },
+
+        "delay": {
+            "oneOf": [
+                {"type": "number"},
+                {"type": "string"}
+            ],
+            "description": "Delay before rendering next cue, number of seconds or human-readable string like '0.5hr'"
+        },
+
+        "IChoice": {
+            "type": "object",
+            "properties": {
+                "label": {
+                    "type": "string",
+                    "description": "Choice button label"
+                },
+                "id": {
+                    "type": "string",
+                    "description": "Cue id to go to"
+                },
+                "delay": { "$ref": "#/definitions/delay" }
+            },
+            "required": ["label", "id"],
+            "additionalProperties": false
+        },
+
+        "ICue": {
+            "type": "object",
+            "properties": {
+                "text": {
+                    "type": "string",
+                    "description": "Cue message"
+                },
+                "choices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/IChoice"
+                    }
+                }
+            },
+            "required": ["text"],
+            "additionalProperties": false
+        }
+    }
+}

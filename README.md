@@ -1,6 +1,6 @@
 # deathline
 
-Deathline is TG bot seed to create Lifeline-like games, written in TypeScript. Games are described in JSON format (schema pending). 
+Deathline is TG bot seed to create Lifeline-like games, written in TypeScript. Games are described in JSON format. 
 It's still in very early stages, but should work.
 
 ## 🕸️ Requirements
@@ -20,6 +20,8 @@ It's still in very early stages, but should work.
 Test game is located in `games/pushkin.json` (Russian only at the moment). Also take a look at `lib/deathline.ts`, it contains interfaces and types for game.
 
 Place your game at `games/your_game.json` and run it by adding `GAME_NAME = your_game` to `.env` file.
+
+There's no documentation at the moment, but you can take a look at `./schema.json`.
 
 ## ⌨️ Contributing
 

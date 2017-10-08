@@ -1,15 +1,27 @@
 import { readFile as _readFile} from 'fs';
 import * as util from 'util';
+import * as Ajv from 'ajv';
 import { IGame } from './deathline';
 
 const readFile = util.promisify(_readFile);
 
-export function loadGame(gameName: string = 'pushkin'): Promise<IGame> {
-    return readFile(`./games/${gameName}.json`)
-        .then((contents) => {
-            const game: IGame = JSON.parse(contents.toString());
-            console.log(`Game "${game.title}" loaded from "${gameName}".`);
+// tslint:disable-next-line:no-var-requires
+const schema = require('../schema.json');
+const ajv = new Ajv();
+const validate = ajv.compile(schema);
 
-            return game;
-        });
+export function loadGame(gameName: string = 'pushkin'): Promise<IGame> {
+    function onGameLoaded(contents: Buffer) {
+        const game: IGame = JSON.parse(contents.toString());
+        const valid = validate(game);
+        if (!valid) {
+            throw new Error(JSON.stringify(validate.errors));
+        }
+        console.log(`Game "${game.title}" loaded from "${gameName}".`);
+
+        return game;
+    }
+
+    return readFile(`./games/${gameName}.json`)
+        .then(onGameLoaded);
 }
