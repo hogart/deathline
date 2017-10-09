@@ -2,29 +2,9 @@ export interface IDict<T> {
     [key: string]: T;
 }
 
-type TState = IDict<any>;
+export type TState = IDict<any>;
 
-interface ISetterInc {
-    $inc: any;
-}
-
-interface ISetterDec {
-    $dec: number;
-}
-
-interface ISetterMul {
-    $mul: number;
-}
-
-interface ISetterSet {
-    $set: any;
-}
-
-interface ISetterNeg {
-    $neg: any;
-}
-
-export type TSetter = IDict<ISetterInc & ISetterDec & ISetterMul & ISetterSet & ISetterNeg>;
+export type TSetter = IDict<any>; // TODO: more strict type-checking
 
 export interface IChoice {
     /** button label */
