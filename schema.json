@@ -27,7 +27,7 @@
         "cues": {
             "type": "object",
             "description": "Game cues",
-            "additionalProperties": {"$ref": "#/definitions/ICue"}
+            "additionalProperties": { "$ref": "#/definitions/ICue" }
         }
     },
     "required": ["title", "description", "settings", "start", "cues", "state"],
@@ -42,10 +42,7 @@
                     "type": "boolean",
                     "description": "Use markdown or HTML for message formatting"
                 },
-                "templateSettings": {
-                    "type": "object",
-                    "description": "Settings for _.template"
-                },
+                "templateSettings": { "$ref": "#/definitions/ITemplateSettings" },
                 "restartRequest": {
                     "type": "string",
                     "description": "Message to show when asking user if they want to restart game"
@@ -99,6 +96,25 @@
             },
             "required": ["text"],
             "additionalProperties": false
+        },
+
+        "ITemplateSettings": {
+            "type": "object",
+            "description": "Settings for _.template",
+            "properties": {
+                "escape": {
+                    "type": "string",
+                    "description": "Escape delimiters for _.template. Compiled to RegExp"
+                },
+                "evaluate": {
+                    "type": "string",
+                    "description": "evaluate delimiters for _.template. Compiled to RegExp"
+                },
+                "interpolate": {
+                    "type": "string",
+                    "description": "interpolate delimiters for _.template. Compiled to RegExp"
+                }
+            }
         }
     }
 }
