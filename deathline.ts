@@ -9,6 +9,7 @@ import { extractCueId } from './lib/extractCueId';
 import { isValidChoice } from './lib/isValidChoice';
 import { createUser } from './lib/createUser';
 import { cuePrefix } from './lib/constants';
+import { applySetter } from './lib/applySetter';
 
 dotenv.config();
 
@@ -59,6 +60,8 @@ loadGame(process.env.GAME_NAME).then((game) => {
             if (user.timeout) {
                 timeOutManager.clear(user.timeout);
             }
+
+            applySetter(user, choice.setter);
 
             const renderReply = () => {
                 user.currentId = choice.id;
