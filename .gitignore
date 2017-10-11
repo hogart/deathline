@@ -3,3 +3,6 @@ game_db.json
 games/*.json
 !**games/pushkin.json
 .env
+test/**/*.js
+.nyc_output/
+coverage/
