@@ -2,7 +2,7 @@ import Telegraf = require('telegraf');
 import template = require('lodash.template');
 import { TemplateExecutor } from 'lodash';
 import { IChoice, IDict, IGame, ITemplateSettings, IUser } from './deathline';
-import { restartConfirmation, restartRequest, waitingMessage } from '../constants';
+import { restartConfirmation, restartRequest, waitingMessage } from './constants';
 
 interface IButton {
     action: string;

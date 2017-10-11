@@ -8,7 +8,7 @@ import { TimeOutManager } from './lib/TimeOutManager';
 import { extractCueId } from './lib/extractCueId';
 import { isValidChoice } from './lib/isValidChoice';
 import { createUser } from './lib/createUser';
-import { cuePrefix } from './constants';
+import { cuePrefix } from './lib/constants';
 
 dotenv.config();
 

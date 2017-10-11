@@ -4,5 +4,7 @@ games/*.json
 !**games/pushkin.json
 .env
 test/**/*.js
+lib/**/*.js
+deathline.js
 .nyc_output/
 coverage/

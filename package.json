@@ -6,7 +6,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "npm run build:live",
-    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./index.ts",
+    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./deathline.ts",
     "pretest": "tsc",
     "test": "alsatian test/**/*.js --tap",
     "test-cov": "nyc npm test",
