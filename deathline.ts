@@ -65,7 +65,7 @@ loadGame(process.env.GAME_NAME).then((game) => {
 
             const renderReply = () => {
                 user.currentId = choice.id;
-                const {message, buttons} = renderer.cue(ctx.session[username]);
+                const {message, buttons} = renderer.cue(user);
 
                 return ctx.reply(message, buttons);
             };

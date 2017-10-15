@@ -6,9 +6,7 @@ export type TState = IDict<any>;
 
 export type TSetter = IDict<any>; // TODO: more strict type-checking
 
-export interface IChoice {
-    /** button label */
-    label: string;
+interface ITransition {
     /** cue id to go to */
     id: string;
     /** variables to change */
@@ -17,11 +15,18 @@ export interface IChoice {
     delay?: number | string;
 }
 
-interface ICue {
+export interface IChoice extends ITransition {
+    /** button label */
+    label: string;
+}
+
+export interface ICue {
     /** cue contents, is processed with variables */
     text: string;
     /** choices to make */
     choices?: IChoice[];
+    /** automatically transit to given cue */
+    autoTransition: ITransition;
 }
 
 export interface ITemplateSettings<T> {
