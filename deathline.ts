@@ -1,15 +1,16 @@
-import ms = require('ms');
 import dotenv = require('dotenv');
-import { Renderer } from './lib/Renderer';
+import { IReply, Renderer } from './lib/Renderer';
 import { createBot } from './lib/createBot';
 import { loadGame } from './lib/loadGame';
-import { IUser } from './lib/deathline';
+import { IUser, ITransition } from './lib/deathline';
 import { TimeOutManager } from './lib/TimeOutManager';
 import { extractCueId } from './lib/extractCueId';
-import { isValidChoice } from './lib/isValidChoice';
+import { getChoice } from './lib/getChoice';
 import { createUser } from './lib/createUser';
 import { cuePrefix } from './lib/constants';
 import { applySetter } from './lib/applySetter';
+import { normalizeDelay } from './lib/normalizeDelay';
+import { extendContext, TContext } from './lib/extendContext';
 
 dotenv.config();
 
@@ -18,67 +19,100 @@ const bot = createBot(process.env.BOT_TOKEN as string, 'game_db.json');
 loadGame(process.env.GAME_NAME).then((game) => {
     const timeOutManager = new TimeOutManager();
     const renderer = new Renderer(game);
+    extendContext(bot, game);
 
     bot.command('/help', (ctx) => {
         return ctx.reply(
-            renderer.help(ctx.session[ctx.from.username])
+            renderer.help(ctx.deathline.getUser(ctx))
         );
     });
 
     bot.command('/start', (ctx) => {
         const username = ctx.from.username;
-        if (ctx.session[username]) {
-            const {message, buttons} = renderer.restart(ctx.session[username]);
 
-            return ctx.reply(message, buttons);
-        } else {
+        if (!ctx.session[username]) {
             ctx.session[username] = createUser(game);
-            const {message, buttons} = renderer.cue(ctx.session[username]);
-
-            return ctx.reply(message, buttons);
         }
+
+        const transition: ITransition = {
+            id: game.start,
+        };
+
+        return transitionTo(transition, ctx.session[username])
+            .then(replyResolver(ctx));
     });
+
+    function replyResolver(ctx: TContext) {
+        return function (reply: IReply) {
+            if (reply.auto) {
+                reply.auto.then(replyResolver(ctx));
+            }
+
+            return ctx.reply(reply.message, reply.buttons);
+        };
+    }
 
     function restart(ctx: IContextUpdate) {
         const username = ctx.from.username;
         ctx.session[username] = createUser(game);
-        const {message, buttons} = renderer.cue(ctx.session[username]);
 
-        return ctx.reply(message, buttons);
+        const transition = {
+            id: game.start,
+        };
+
+        return transitionTo(transition, ctx.session[username])
+            .then(replyResolver(ctx));
     }
 
     bot.action('/restart', restart);
     bot.command('/restart', restart);
 
-    bot.action(cuePrefix, (ctx) => {
-        const username = ctx.from.username;
-        const user = ctx.session[username] as IUser;
-        const cueId = extractCueId(ctx);
-        const choice = isValidChoice(cueId, game, user);
+    function transitionTo(transition: ITransition, user: IUser): Promise<IReply> {
+        const targetCue = game.cues[transition.id];
 
-        if (choice !== null) {
+        if (transition.setter) {
+            user.state = applySetter(user, transition.setter);
+        }
+
+        const {message, buttons} = renderer.cue(targetCue, user.state);
+
+        return new Promise((resolve) => {
+            timeOutManager.set(() => {
+                const reply: IReply = {message, buttons};
+                if (targetCue.autoTransition) {
+                    reply.auto = handleAutoTransition(targetCue.autoTransition, user);
+                }
+                resolve(reply);
+            }, normalizeDelay(transition));
+        });
+    }
+
+    function handleAutoTransition(transition: ITransition, user: IUser): Promise<IReply> {
+        return new Promise((resolve) => {
+            timeOutManager.set(
+                () => {
+                    resolve(transitionTo(transition, user));
+                },
+                normalizeDelay(transition)
+            );
+        });
+    }
+
+    bot.action(cuePrefix, (ctx) => {
+        const user = ctx.deathline.getUser(ctx);
+        const newCue = extractCueId(ctx);
+        const transition = getChoice(newCue, ctx.deathline.getCue(ctx));
+
+        if (transition) {
+            // clear idle timeout
             if (user.timeout) {
                 timeOutManager.clear(user.timeout);
             }
 
-            applySetter(user, choice.setter);
-
-            const renderReply = () => {
-                user.currentId = choice.id;
-                const {message, buttons} = renderer.cue(user);
-
-                return ctx.reply(message, buttons);
-            };
-
-            if (choice.delay) {
-                const delay = typeof choice.delay === 'number' ? (choice.delay * 1000) : ms(choice.delay);
-                user.timeout = timeOutManager.set(renderReply, delay);
-                const {message} = renderer.waiting(user);
-                ctx.reply(message);
-            } else {
-                return renderReply();
-            }
+            transitionTo(transition, user)
+                .then((reply) => ctx.reply(reply.message, reply.buttons));
         }
+
     });
 
     bot.startPolling();
