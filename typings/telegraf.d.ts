@@ -29,6 +29,7 @@ interface IContext {
     from: {
         username: string;
     };
+    deathline: any; // TODO: stricter typecheck, use declaration merging
 }
 
 interface IContextMessage extends IContext {
