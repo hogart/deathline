@@ -6,7 +6,7 @@ export type TState = IDict<any>;
 
 export type TSetter = IDict<any>; // TODO: more strict type-checking
 
-interface ITransition {
+export interface ITransition {
     /** cue id to go to */
     id: string;
     /** variables to change */
