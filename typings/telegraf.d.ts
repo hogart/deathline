@@ -1,3 +1,5 @@
+// tslint:disable:max-classes-per-file
+
 interface IMessage {
     text: string;
 }
@@ -18,15 +20,15 @@ interface IUpdate {
         date: number;
         text: string;
         entities: object[];
-    }
+    };
 }
 
 interface IContext {
     reply(message: string, opts?: any): void;
-    session? : any;
+    session?: any;
     from: {
         username: string;
-    }
+    };
 }
 
 interface IContextMessage extends IContext {
@@ -44,22 +46,22 @@ interface IHandler<T extends IContext> {
 declare class Telegraf {
     constructor(token: string, options?: object);
 
-    command(cmd: string, handler: IHandler<IContextUpdate>): void;
-    hears(msg: string | RegExp, handler: IHandler<IContextMessage>): void;
-    action(msg: string | RegExp, handler: IHandler<IContextUpdate>): void;
-    startPolling(): void;
-    use(...middlware: Function[]): void;
+    public command(cmd: string, handler: IHandler<IContextUpdate>): void;
+    public hears(msg: string | RegExp, handler: IHandler<IContextMessage>): void;
+    public action(msg: string | RegExp, handler: IHandler<IContextUpdate>): void;
+    public startPolling(): void;
+    public use(...middlware: Function[]): void;
+    public context: any;
 }
-
 
 declare namespace Telegraf {
     export class Markup {
-        static keyboard(desc: any): any;
+        public static keyboard(desc: any): any;
     }
 
     export class Extra {
-        static HTML(): any;
-        static markdown(): any;
+        public static HTML(): any;
+        public static markdown(): any;
     }
 }
 
