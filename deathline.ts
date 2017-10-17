@@ -72,15 +72,16 @@ loadGame(process.env.GAME_NAME).then((game) => {
             user.state = applySetter(user, transition.setter);
         }
 
-        const {message, buttons} = renderer.cue(targetCue, user.state);
         user.currentId = transition.id;
+
+        const reply = renderer.cue(targetCue, user.state);
+
+        if (targetCue.autoTransition) {
+            reply.auto = handleAutoTransition(targetCue.autoTransition, user);
+        }
 
         return new Promise((resolve) => {
             timeOutManager.set(() => {
-                const reply: IReply = {message, buttons};
-                if (targetCue.autoTransition) {
-                    reply.auto = handleAutoTransition(targetCue.autoTransition, user);
-                }
                 resolve(reply);
             }, normalizeDelay(transition));
         });
@@ -109,7 +110,7 @@ loadGame(process.env.GAME_NAME).then((game) => {
             }
 
             return transitionTo(transition, user)
-                .then((reply) => ctx.deathline.reply(reply));
+                .then(replyResolver(ctx));
         } else {
             console.error(`Invalid transition to ${newCue}`);
         }
