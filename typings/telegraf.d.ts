@@ -25,6 +25,8 @@ interface IUpdate {
 
 interface IContext {
     reply(message: string, opts?: any): void;
+    replyWithMarkdown(message: string, opts?: any): void;
+    replyWithHTML(message: string, opts?: any): void;
     session?: any;
     from: {
         username: string;

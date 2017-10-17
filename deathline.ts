@@ -19,12 +19,10 @@ const bot = createBot(process.env.BOT_TOKEN as string, 'game_db.json');
 loadGame(process.env.GAME_NAME).then((game) => {
     const timeOutManager = new TimeOutManager();
     const renderer = new Renderer(game);
-    extendContext(bot, game);
+    extendContext(bot, game, renderer);
 
     bot.command('/help', (ctx) => {
-        return ctx.reply(
-            renderer.help(ctx.deathline.getUser(ctx))
-        );
+        return ctx.deathline.help(ctx);
     });
 
     bot.command('/start', (ctx) => {
@@ -48,7 +46,7 @@ loadGame(process.env.GAME_NAME).then((game) => {
                 reply.auto.then(replyResolver(ctx));
             }
 
-            return ctx.reply(reply.message, reply.buttons);
+            return ctx.deathline.reply(ctx, reply);
         };
     }
 
@@ -75,6 +73,7 @@ loadGame(process.env.GAME_NAME).then((game) => {
         }
 
         const {message, buttons} = renderer.cue(targetCue, user.state);
+        user.currentId = transition.id;
 
         return new Promise((resolve) => {
             timeOutManager.set(() => {
@@ -109,8 +108,10 @@ loadGame(process.env.GAME_NAME).then((game) => {
                 timeOutManager.clear(user.timeout);
             }
 
-            transitionTo(transition, user)
-                .then((reply) => ctx.reply(reply.message, reply.buttons));
+            return transitionTo(transition, user)
+                .then((reply) => ctx.deathline.reply(reply));
+        } else {
+            console.error(`Invalid transition to ${newCue}`);
         }
 
     });

@@ -75,26 +75,28 @@ export class Renderer {
     }
 
     private inlineKeyboard(buttons: IButton[]): any {
-        return this.markupRenderer().markup((m: any) => {
-            return m.inlineKeyboard(
-                buttons.map((button) => this.button(button, m))
+        return this.markupRenderer().markup((markup: any) => {
+            const keyboard = buttons.map(
+                (button) => this.button(button, markup)
             );
+
+            return markup.inlineKeyboard(keyboard);
         });
     }
 
     public choices(choices: IChoice[], state: TState): any {
-        return this.markupRenderer().markup((m: any) => {
-            const buttons = choices.map((choice) =>
+        return this.markupRenderer().markup((markup: any) => {
+            const keyboard = choices.map((choice) =>
                 this.button(
                     {
                         label: this.template(choice.label, state),
                         action: `/cue:${choice.id}`,
                     },
-                    m
+                    markup
                 )
             );
 
-            return m.inlineKeyboard(buttons);
+            return markup.inlineKeyboard(keyboard);
         });
     }
 
@@ -108,11 +110,8 @@ export class Renderer {
         };
     }
 
-    public help(user?: IUser): string {
-        return this.template(
-            this.game.description,
-            user ? user.state : this.game.state // in case user sees this before starting game
-        );
+    public help(state: TState): string {
+        return this.template(this.game.description, state);
     }
 
     public restart(user: IUser): IReply {

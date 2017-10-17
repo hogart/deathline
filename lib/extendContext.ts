@@ -1,8 +1,9 @@
 import { ICue, IGame, IUser } from './deathline';
+import { IReply, Renderer } from './Renderer';
 
 export type TContext = IContextUpdate | IContextMessage;
 
-export function extendContext(tgBot: Telegraf, game: IGame) {
+export function extendContext(tgBot: Telegraf, game: IGame, renderer: Renderer) {
     tgBot.context.deathline = {
         getUser(ctx: TContext): IUser {
             const username = ctx.from.username;
@@ -13,6 +14,14 @@ export function extendContext(tgBot: Telegraf, game: IGame) {
 
         getCue(ctx: TContext, cueId?: string): ICue {
             return game.cues[cueId || this.getUser(ctx).currentId];
+        },
+
+        reply(ctx: TContext, reply: IReply) {
+            return (game.settings.markdown ? ctx.replyWithMarkdown : ctx.replyWithHTML)(reply.message, reply.buttons);
+        },
+
+        help(ctx: TContext, user: IUser) {
+            return (game.settings.markdown ? ctx.replyWithMarkdown : ctx.replyWithHTML)(renderer.help(user.state || game.state));
         },
     };
 }
