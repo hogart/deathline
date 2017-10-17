@@ -9,7 +9,6 @@ import { getChoice } from './lib/getChoice';
 import { createUser } from './lib/createUser';
 import { cuePrefix } from './lib/constants';
 import { applySetter } from './lib/applySetter';
-import { normalizeDelay } from './lib/normalizeDelay';
 import { extendContext, TContext } from './lib/extendContext';
 
 dotenv.config();
@@ -72,30 +71,22 @@ loadGame(process.env.GAME_NAME).then((game) => {
             user.state = applySetter(user, transition.setter);
         }
 
-        user.currentId = transition.id;
-
         const reply = renderer.cue(targetCue, user.state);
+
+        user.currentId = transition.id;
 
         if (targetCue.autoTransition) {
             reply.auto = handleAutoTransition(targetCue.autoTransition, user);
         }
 
-        return new Promise((resolve) => {
-            timeOutManager.set(() => {
-                resolve(reply);
-            }, normalizeDelay(transition));
-        });
+        return timeOutManager.promise(() => reply, transition.delay);
     }
 
     function handleAutoTransition(transition: ITransition, user: IUser): Promise<IReply> {
-        return new Promise((resolve) => {
-            timeOutManager.set(
-                () => {
-                    resolve(transitionTo(transition, user));
-                },
-                normalizeDelay(transition)
-            );
-        });
+        return timeOutManager.promise<IReply>(
+            () => transitionTo(transition, user),
+            transition.delay
+        );
     }
 
     bot.action(cuePrefix, (ctx) => {
