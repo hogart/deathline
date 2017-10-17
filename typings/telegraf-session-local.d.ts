@@ -3,11 +3,11 @@ interface IStorage {}
 declare class LocalSession {
     constructor(options?: ILocalSessionOptions);
 
-    middleware(): Function;
+    public middleware(): Function;
 
-    static storagefileSync: IStorage;
-    static storagefileAsync: IStorage;
-    static storageMemory: IStorage;
+    public static storagefileSync: IStorage;
+    public static storagefileAsync: IStorage;
+    public static storageMemory: IStorage;
 }
 
 interface ILocalSessionOptions {
@@ -16,7 +16,7 @@ interface ILocalSessionOptions {
     format?: {
         serialize(object: any): string;
         deserialize(str: string): any;
-    },
+    };
     state?: any;
 }
 

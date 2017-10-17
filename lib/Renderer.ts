@@ -1,7 +1,7 @@
 import Telegraf = require('telegraf');
 import template = require('lodash.template');
 import { TemplateExecutor } from 'lodash';
-import { IChoice, IDict, IGame, ITemplateSettings, IUser } from './deathline';
+import { IChoice, ICue, IDict, IGame, ITemplateSettings, IUser, TState } from './deathline';
 import { restartConfirmation, restartRequest, waitingMessage } from './constants';
 
 interface IButton {
@@ -9,9 +9,10 @@ interface IButton {
     label: string;
 }
 
-interface IReply {
+export interface IReply {
     message: string;
     buttons?: any;
+    auto?: Promise<IReply>;
 }
 
 /**
@@ -74,33 +75,34 @@ export class Renderer {
     }
 
     private inlineKeyboard(buttons: IButton[]): any {
-        return this.markupRenderer().markup((m: any) => {
-            return m.inlineKeyboard(
-                buttons.map((button) => this.button(button, m))
+        return this.markupRenderer().markup((markup: any) => {
+            const keyboard = buttons.map(
+                (button) => this.button(button, markup)
             );
+
+            return markup.inlineKeyboard(keyboard);
         });
     }
 
-    public choices(choices: IChoice[], user: IUser): any {
-        return this.markupRenderer().markup((m: any) => {
-            const buttons = choices.map((choice) =>
+    public choices(choices: IChoice[], state: TState): any {
+        return this.markupRenderer().markup((markup: any) => {
+            const keyboard = choices.map((choice) =>
                 this.button(
                     {
-                        label: this.template(choice.label, user.state),
+                        label: this.template(choice.label, state),
                         action: `/cue:${choice.id}`,
                     },
-                    m
+                    markup
                 )
             );
 
-            return m.inlineKeyboard(buttons);
+            return markup.inlineKeyboard(keyboard);
         });
     }
 
-    public cue(user: IUser): IReply {
-        const cue = this.game.cues[user.currentId];
-        const message = this.template(cue.text, user.state);
-        const buttons = cue.choices ? this.choices(cue.choices, user) : null;
+    public cue(cue: ICue, state: TState): IReply {
+        const message = this.template(cue.text, state);
+        const buttons = cue.choices ? this.choices(cue.choices, state) : null;
 
         return {
             message,
@@ -108,11 +110,8 @@ export class Renderer {
         };
     }
 
-    public help(user?: IUser): string {
-        return this.template(
-            this.game.description,
-            user ? user.state : this.game.state // in case user sees this before starting game
-        );
+    public help(state: TState): string {
+        return this.template(this.game.description, state);
     }
 
     public restart(user: IUser): IReply {
