@@ -1,7 +1,7 @@
 import Telegraf = require('telegraf');
 import template = require('lodash.template');
 import { TemplateExecutor } from 'lodash';
-import { IChoice, ICue, IDict, IGame, ITemplateSettings, IUser, TState } from './deathline';
+import { IAudioCue, IChoice, TCue, IDict, IGame, IImgCue, ITemplateSettings, IUser, TState } from './deathline';
 import { restartConfirmation, restartRequest, waitingMessage } from './constants';
 
 interface IButton {
@@ -102,15 +102,23 @@ export class Renderer {
         });
     }
 
-    public cue(cue: ICue, state: TState): IReply {
+    private isImgCue(cue: TCue): cue is IImgCue {
+        return (<IImgCue>cue).img !== undefined;
+    }
+
+    private isAudioCue(cue: TCue): cue is IAudioCue {
+        return (<IAudioCue>cue).audio !== undefined;
+    }
+
+    public cue(cue: TCue, state: TState): IReply {
         const reply: IReply = {
             message: this.template(cue.text, state),
             buttons: cue.choices ? this.choices(cue.choices, state) : null,
         };
 
-        if (cue.img) {
+        if (this.isImgCue(cue)) {
             reply.img = cue.img;
-        } else if (cue.audio) {
+        } else if (this.isAudioCue(cue)) {
             reply.audio = cue.audio;
         }
 

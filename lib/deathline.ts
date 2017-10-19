@@ -23,13 +23,21 @@ export interface IChoice extends ITransition {
 export interface ICue {
     /** cue contents, is processed with variables */
     text: string;
-    img?: string;
-    audio?: string;
     /** choices to make */
     choices?: IChoice[];
     /** automatically transit to given cue */
-    autoTransition: ITransition;
+    autoTransition?: ITransition;
 }
+
+export interface IImgCue extends ICue {
+    img: string;
+}
+
+export interface IAudioCue extends ICue {
+    audio: string;
+}
+
+export type TCue = IImgCue | IAudioCue;
 
 export interface ITemplateSettings<T> {
     escape?: T;
@@ -59,7 +67,7 @@ export interface IGame {
     /** starting cue */
     start: string;
     /** cues */
-    cues: IDict<ICue>;
+    cues: IDict<TCue>;
 }
 
 export interface IUser {

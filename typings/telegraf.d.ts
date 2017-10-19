@@ -27,13 +27,13 @@ interface IContext {
     reply(message: string, opts?: any): void;
     replyWithMarkdown(message: string, opts?: any): void;
     replyWithHTML(message: string, opts?: any): void;
-    replyWithPhoto(message: string, opts?: any): void;
-    replyWithAudio(message: string, opts?: any): void;
+    replyWithPhoto(message: object, opts?: any): void;
+    replyWithAudio(message: object, opts?: any): void;
     session?: any;
     from: {
         username: string;
     };
-    deathline: any; // TODO: stricter typecheck, use declaration merging
+    deathline: any;
 }
 
 interface IContextMessage extends IContext {
