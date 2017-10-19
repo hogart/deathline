@@ -1,41 +1,61 @@
-import { ICue, IGame, IUser } from './deathline';
+import { TCue, IGame, IUser } from './deathline';
 import { IReply, Renderer } from './Renderer';
 
 export type TContext = IContextUpdate | IContextMessage;
 
-export function extendContext(tgBot: Telegraf, game: IGame, renderer: Renderer) {
-    tgBot.context.deathline = {
-        getUser(ctx: TContext): IUser {
-            const username = ctx.from.username;
-            const user = ctx.session[username];
+namespace Telegraf {
+    interface IContext {
+        deathline: DeathlineContext;
+    }
+}
 
-            return user;
-        },
+class DeathlineContext {
+    private tgBot: Telegraf;
+    private game: IGame;
+    private renderer: Renderer;
 
-        getCue(ctx: TContext, cueId?: string): ICue {
-            return game.cues[cueId || this.getUser(ctx).currentId];
-        },
+    constructor(tgBot: Telegraf, game: IGame, renderer: Renderer) {
+        this.tgBot = tgBot;
+        this.game = game;
+        this.renderer = renderer;
+    }
 
-        reply(ctx: TContext, reply: IReply) {
-            let method;
+    public getUser(ctx: TContext): IUser {
+        const username = ctx.from.username;
+        const user = ctx.session[username];
 
-            if (reply.img) {
-                method = ctx.replyWithPhoto;
-            } else if (reply.audio) {
-                method = ctx.replyWithAudio;
+        return user;
+    }
+
+    public getCue(ctx: TContext, cueId?: string): TCue {
+        return this.game.cues[cueId || this.getUser(ctx).currentId];
+    }
+
+    public reply(ctx: TContext, reply: IReply) {
+        if (reply.img) {
+            return ctx.replyWithPhoto({url: reply.img}, {
+                caption: reply.message,
+                ...reply.buttons,
+            });
+        } else if (reply.audio) {
+            return ctx.replyWithAudio({url: reply.audio}, {
+                caption: reply.message,
+                ...reply.buttons,
+            });
+        } else {
+            if (this.game.settings.markdown) {
+                return ctx.replyWithMarkdown(reply.message, reply.buttons);
             } else {
-                if (game.settings.markdown) {
-                    method = ctx.replyWithMarkdown;
-                } else {
-                    method = ctx.replyWithHTML;
-                }
+                return ctx.replyWithHTML(reply.message, reply.buttons);
             }
+        }
+    }
 
-            return method(reply.message, reply.buttons);
-        },
+    public help(ctx: TContext, user: IUser) {
+        return (this.game.settings.markdown ? ctx.replyWithMarkdown : ctx.replyWithHTML)(this.renderer.help(user.state || this.game.state));
+    }
+}
 
-        help(ctx: TContext, user: IUser) {
-            return (game.settings.markdown ? ctx.replyWithMarkdown : ctx.replyWithHTML)(renderer.help(user.state || game.state));
-        },
-    };
+export function extendContext(tgBot: Telegraf, game: IGame, renderer: Renderer) {
+    tgBot.context.deathline = new DeathlineContext(tgBot, game, renderer);
 }
