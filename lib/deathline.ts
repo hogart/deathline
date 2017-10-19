@@ -23,6 +23,8 @@ export interface IChoice extends ITransition {
 export interface ICue {
     /** cue contents, is processed with variables */
     text: string;
+    img?: string;
+    audio?: string;
     /** choices to make */
     choices?: IChoice[];
     /** automatically transit to given cue */

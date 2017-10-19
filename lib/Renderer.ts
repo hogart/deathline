@@ -13,6 +13,8 @@ export interface IReply {
     message: string;
     buttons?: any;
     auto?: Promise<IReply>;
+    img?: string;
+    audio?: string;
 }
 
 /**
@@ -101,13 +103,18 @@ export class Renderer {
     }
 
     public cue(cue: ICue, state: TState): IReply {
-        const message = this.template(cue.text, state);
-        const buttons = cue.choices ? this.choices(cue.choices, state) : null;
-
-        return {
-            message,
-            buttons,
+        const reply: IReply = {
+            message: this.template(cue.text, state),
+            buttons: cue.choices ? this.choices(cue.choices, state) : null,
         };
+
+        if (cue.img) {
+            reply.img = cue.img;
+        } else if (cue.audio) {
+            reply.audio = cue.audio;
+        }
+
+        return reply;
     }
 
     public help(state: TState): string {
