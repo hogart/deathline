@@ -20,7 +20,7 @@ export interface IReply {
 /**
  * Responsible for all text rendering in game
  */
-export class Renderer {
+export class TextRenderer {
     private game: IGame;
     private markupRenderer: Function;
 

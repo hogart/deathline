@@ -1,6 +1,7 @@
 import { IGame } from './deathline';
-import { Renderer } from './Renderer';
+import { TextRenderer } from './TextRenderer';
 import { DeathlineContext } from './DeathlineContext';
+import { MediaRenderer } from './MediaRenderer';
 
 export type TContext = IContextUpdate | IContextMessage;
 
@@ -10,6 +11,6 @@ namespace Telegraf {
     }
 }
 
-export function extendContext(tgBot: Telegraf, game: IGame, renderer: Renderer) {
-    tgBot.context.deathline = new DeathlineContext(tgBot, game, renderer);
+export function extendContext(tgBot: Telegraf, game: IGame, textRenderer: TextRenderer, mediaRenderer: MediaRenderer) {
+    tgBot.context.deathline = new DeathlineContext(tgBot, game, textRenderer, mediaRenderer);
 }

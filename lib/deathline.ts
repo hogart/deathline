@@ -68,6 +68,8 @@ export interface IGame {
     start: string;
     /** cues */
     cues: IDict<TCue>;
+
+    gameFile: string;
 }
 
 export interface IUser {

@@ -1,17 +1,19 @@
-import {IGame, IUser, TCue} from './deathline';
-import {IReply, Renderer} from './Renderer';
-import {TContext} from './extendContext';
-import { filePathToOptions } from './filePathToOptions';
+import { IGame, IUser, TCue} from './deathline';
+import { IReply, TextRenderer } from './TextRenderer';
+import { TContext } from './extendContext';
+import { MediaRenderer } from './MediaRenderer';
 
 export class DeathlineContext {
     private tgBot: Telegraf;
     private game: IGame;
-    private renderer: Renderer;
+    private textRenderer: TextRenderer;
+    private mediaRenderer: MediaRenderer;
 
-    constructor(tgBot: Telegraf, game: IGame, renderer: Renderer) {
+    constructor(tgBot: Telegraf, game: IGame, textRenderer: TextRenderer, mediaRenderer: MediaRenderer) {
         this.tgBot = tgBot;
         this.game = game;
-        this.renderer = renderer;
+        this.textRenderer = textRenderer;
+        this.mediaRenderer = mediaRenderer;
     }
 
     public getUser(ctx: TContext): IUser {
@@ -27,7 +29,7 @@ export class DeathlineContext {
 
     public reply(ctx: TContext, reply: IReply) {
         if (reply.img) {
-            return filePathToOptions(reply.img).then((options) => {
+            return this.mediaRenderer.renderMedia(reply.img).then((options) => {
                 return ctx.replyWithPhoto(options, {
                     caption: reply.message,
                     ...reply.buttons,
@@ -38,7 +40,7 @@ export class DeathlineContext {
                 return ctx.reply('Bad image', reply.buttons);
             });
         } else if (reply.audio) {
-            return filePathToOptions(reply.audio).then((options) => {
+            return this.mediaRenderer.renderMedia(reply.audio).then((options) => {
                 return ctx.replyWithAudio(options, {
                     caption: reply.message,
                     ...reply.buttons,
@@ -58,6 +60,6 @@ export class DeathlineContext {
     }
 
     public help(ctx: TContext, user: IUser) {
-        return (this.game.settings.markdown ? ctx.replyWithMarkdown : ctx.replyWithHTML)(this.renderer.help(user.state || this.game.state));
+        return (this.game.settings.markdown ? ctx.replyWithMarkdown : ctx.replyWithHTML)(this.textRenderer.help(user.state || this.game.state));
     }
 }

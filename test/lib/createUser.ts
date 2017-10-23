@@ -12,6 +12,7 @@ const testGame = {
     description: '',
     settings: {},
     cues: {},
+    gameFile: '',
 };
 
 export class CreateUserFixture {

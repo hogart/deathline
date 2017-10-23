@@ -1,5 +1,6 @@
 import dotenv = require('dotenv');
-import { IReply, Renderer } from './lib/Renderer';
+import { IReply, TextRenderer } from './lib/TextRenderer';
+import { MediaRenderer } from './lib/MediaRenderer';
 import { createBot } from './lib/createBot';
 import { loadGame } from './lib/loadGame';
 import { IUser, ITransition } from './lib/deathline';
@@ -17,8 +18,9 @@ const bot = createBot(process.env.BOT_TOKEN as string, 'game_db.json');
 
 loadGame(process.env.GAME_NAME).then((game) => {
     const timeOutManager = new TimeOutManager();
-    const renderer = new Renderer(game);
-    extendContext(bot, game, renderer);
+    const textRenderer = new TextRenderer(game);
+    const mediaRenderer = new MediaRenderer(game);
+    extendContext(bot, game, textRenderer, mediaRenderer);
 
     bot.command('/help', (ctx) => {
         return ctx.deathline.help(ctx);
@@ -71,7 +73,7 @@ loadGame(process.env.GAME_NAME).then((game) => {
             user.state = applySetter(user, transition.setter);
         }
 
-        const reply = renderer.cue(targetCue, user.state);
+        const reply = textRenderer.cue(targetCue, user.state);
 
         user.currentId = transition.id;
 
