@@ -1,12 +1,17 @@
 // tslint:disable:no-magic-numbers
 
 import * as path from 'path';
-import { readFile as _readFile } from 'fs';
+import { readFile as _readFile, writeFile as _writeFile } from 'fs';
 import { promisify } from 'util';
 import parse = require('csv-parse');
 import { IChoice, ICue, IDict } from '../lib/deathline';
 
 const readFile = promisify(_readFile);
+const writeFile = promisify(_writeFile);
+
+const parseP = promisify<string, string[][]>((data: string, cb: IParseCallback) => {
+    parse(data, {from: 2}, cb);
+});
 
 const projectRoot = path.resolve(__dirname, '..');
 const fileArg = process.argv[2];
@@ -21,6 +26,7 @@ function resolveInputPath(filePath: string): string {
 }
 
 const inputFile = resolveInputPath(fileArg);
+const outFile = inputFile.replace(/\.csv$/, '.json');
 
 function prefixId(id: string): string {
     return prefix ? `${prefix}${id}` : id;
@@ -44,18 +50,16 @@ function lineToCue(line: string[]): [string, ICue] {
         };
     } else {
         for (let i = 0; i < 6; i += 2) {
-            const id = choiceLines[i] && choiceLines[i].trim();
-            const label = choiceLines[i + 1] && choiceLines[i + 1].trim();
+            const label = choiceLines[i] && choiceLines[i].trim();
+            const id = choiceLines[i + 1] && choiceLines[i + 1].trim();
 
-            if (id === '' && label === '') {
-                continue;
+            if (!!id !== !!label) { // xor
+                console.info(`Cue "${cueId}" has empty choice id OR label: "${id}"/"${label}"`);
             } else if (id && label) {
                 choices.push({
                     id: prefixId(id),
                     label,
                 });
-            } else {
-                console.info(`Cue "${cueId}" has empty choice id and/or label: "${id}"/"${label}"`);
             }
         }
 
@@ -88,9 +92,12 @@ function gridToCues(grid: string[][]): IDict<ICue> {
 
 readFile(inputFile)
     .then((buffer) => {
-        const contents = buffer.toString();
-        parse(contents, {from: 2}, (err: Error, data: string[][]) => {
-            console.log(gridToCues(data));
-        });
+        return parseP(buffer.toString());
+    })
+    .then((grid) => {
+        return gridToCues(grid);
+    })
+    .then((cues) => {
+        return writeFile(outFile, JSON.stringify(cues, null, '  '));
     })
     .catch((e) => console.error(e));
