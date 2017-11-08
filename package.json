@@ -11,6 +11,7 @@
     "pretest": "tsc",
     "test": "alsatian test/**/*.js --tap",
     "test-cov": "nyc npm test",
+    "posttest": "rimraf lib/**/*.js && rimraf ./deathline.js",
     "lint": "tslint --project tsconfig.json",
     "lint:fix": "tslint --project tsconfig.json --fix"
   },
@@ -40,6 +41,7 @@
     "alsatian": "^2.0.0",
     "nodemon": "^1.12.1",
     "nyc": "^11.2.1",
+    "rimraf": "^2.6.2",
     "ts-node": "^3.3.0",
     "tslint": "^5.7.0",
     "typescript": "^2.5.3"
