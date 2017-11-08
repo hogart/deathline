@@ -113,7 +113,11 @@
                     "type": "string",
                     "description": "Cue id to go to"
                 },
-                "delay": { "$ref": "#/definitions/delay" }
+                "delay": { "$ref": "#/definitions/delay" },
+                "setter": {
+                    "type": "object",
+                    "description": "Variables to change"
+                }
             },
             "required": ["id"]
         },
@@ -128,11 +132,11 @@
                 },
                 "evaluate": {
                     "type": "string",
-                    "description": "evaluate delimiters for _.template. Compiled to RegExp"
+                    "description": "Evaluate delimiters for _.template. Compiled to RegExp"
                 },
                 "interpolate": {
                     "type": "string",
-                    "description": "interpolate delimiters for _.template. Compiled to RegExp"
+                    "description": "Interpolate delimiters for _.template. Compiled to RegExp"
                 }
             }
         }
