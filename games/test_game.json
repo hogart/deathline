@@ -1,0 +1,47 @@
+{
+    "title": "Test game",
+    "description": "This is test deathline game. Use /restart to restart game from scratch.",
+    "settings": {
+        "markdown": true,
+        "templateSettings": {}
+    },
+    "state": {
+        "hesitant": false,
+        "enemy": "_The Great Evil_ (as you understand it)"
+    },
+    "start": "intro:1",
+    "cues": {
+        "intro:1": {
+            "text": "O hero, great adventure awaits you. Onward!",
+            "choices": [
+                {
+                    "label": "Five more minutes...", "id": "intro:2",
+                    "setter": {
+                        "hesitant": true
+                    }
+                },
+                {
+                    "label": "Yes, let's do some adventuring!", "id": "intro:2"
+                }
+            ]
+        },
+        "intro:2": {
+            "text": "You should gather your party before venturing forth.",
+            "choices": [
+                {
+                    "label": "Ooh, I have a party? That's neat!", "id": "end:good"
+                },
+                {
+                    "label": "Probably bunch of loosers. I'm staying home.", "id": "end:bad",
+                    "visible": "state.hesitant"
+                }
+            ]
+        },
+        "end:good": {
+            "text": "You grab your party and using their diverse skills and your own wits and bravery, defeat <%= enemy %>.\n\nAlso you have lot of fun adventures on the way there."
+        },
+        "end:bad": {
+            "text": "You stay home, never learning your true destiny, until it's too late and <%= enemy %> destroys everything you value.\n\nBetter luck next incarnation!"
+        }
+    }
+}
