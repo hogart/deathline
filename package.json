@@ -28,8 +28,7 @@
     "lodash.template": "^4.4.0",
     "ms": "^2.0.0",
     "telegraf": "^3.13.0",
-    "telegraf-session-local": "0.0.4",
-    "xlsx": "^0.11.7"
+    "telegraf-session-local": "0.0.4"
   },
   "devDependencies": {
     "@types/dotenv": "^4.0.1",
