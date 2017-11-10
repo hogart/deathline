@@ -63,19 +63,25 @@
             "description": "Delay before rendering next cue, number of seconds or human-readable string like '0.5hr'"
         },
 
+        "visible": {
+            "type": "string",
+            "description": "Expression to calculate against state to check if this choice displayed to user"
+        },
+
+        "setter": {
+            "type": "object",
+            "description": "Variables to change"
+        },
+
         "IChoice": {
             "type": "object",
-            "#ref": "#/definitions/ITransition",
+            "$ref": "#/definitions/ITransition",
             "properties": {
                 "label": {
                     "type": "string",
                     "description": "Choice button label"
                 },
-                "id": {
-                    "type": "string",
-                    "description": "Cue id to go to"
-                },
-                "delay": { "$ref": "#/definitions/delay" }
+                "visible": { "$ref": "#/definitions/visible" }
             },
             "required": ["label", "id"],
             "additionalProperties": false
@@ -114,10 +120,7 @@
                     "description": "Cue id to go to"
                 },
                 "delay": { "$ref": "#/definitions/delay" },
-                "setter": {
-                    "type": "object",
-                    "description": "Variables to change"
-                }
+                "setter": { "$ref": "#/definitions/setter" }
             },
             "required": ["id"]
         },

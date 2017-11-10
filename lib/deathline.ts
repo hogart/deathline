@@ -1,6 +1,4 @@
-export interface IDict<T> {
-    [key: string]: T;
-}
+import { IDict } from './IDict';
 
 export type TState = IDict<any>;
 
@@ -18,6 +16,8 @@ export interface ITransition {
 export interface IChoice extends ITransition {
     /** button label */
     label: string;
+    /** expression to calculate against state to check if this choice displayed to user */
+    visible?: string;
 }
 
 export interface ICue {

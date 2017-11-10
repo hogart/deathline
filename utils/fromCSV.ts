@@ -4,7 +4,8 @@ import * as path from 'path';
 import { readFile as _readFile, writeFile as _writeFile } from 'fs';
 import { promisify } from 'util';
 import parse = require('csv-parse');
-import { IChoice, ICue, IDict } from '../lib/deathline';
+import { IChoice, ICue } from '../lib/deathline';
+import { IDict } from '../lib/IDict';
 
 const readFile = promisify(_readFile);
 const writeFile = promisify(_writeFile);

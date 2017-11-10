@@ -1,5 +1,5 @@
 import Timer = NodeJS.Timer;
-import { IDict } from './deathline';
+import { IDict } from './IDict';
 import { normalizeDelay } from './normalizeDelay';
 import { messageBufferDelay } from './constants';
 

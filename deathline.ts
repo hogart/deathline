@@ -73,7 +73,7 @@ loadGame(process.env.GAME_NAME).then((game) => {
             user.state = applySetter(user, transition.setter);
         }
 
-        const reply = textRenderer.cue(targetCue, user.state);
+        const reply = textRenderer.cue(targetCue, user.state, transition.id);
 
         user.currentId = transition.id;
 
@@ -93,8 +93,9 @@ loadGame(process.env.GAME_NAME).then((game) => {
 
     bot.action(cuePrefix, (ctx) => {
         const user = ctx.deathline.getUser(ctx);
-        const newCue = extractCueId(ctx);
-        const transition = getChoice(newCue, ctx.deathline.getCue(ctx));
+        const currentCue = ctx.deathline.getCue(ctx);
+        const [cue, choice] = extractCueId(ctx);
+        const transition = getChoice(currentCue, choice);
 
         if (transition) {
             // clear idle timeout
@@ -105,7 +106,7 @@ loadGame(process.env.GAME_NAME).then((game) => {
             return transitionTo(transition, user)
                 .then(replyResolver(ctx));
         } else {
-            console.error(`Invalid transition to ${newCue}`);
+            console.error(`Invalid transition to ${cue}`);
         }
 
     });

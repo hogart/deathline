@@ -1,7 +1,26 @@
 # deathline
 
-Deathline is TG bot seed to create Lifeline-like games, written in TypeScript. Games are described in JSON format. 
+Deathline is Telegram bot seed to create Lifeline-like games, written in TypeScript. Games are authored in JSON format. 
 It's still in very early stages, but should work.
+
+## Features
+
+1) **Multimedia and rich messages** Cue can have embedded image or audio. You can also use Telegram subset of HTML/Markdown for formatting
+1) **Delayed cues** Game can show response after predefined delay, in seconds or in human-readable format (`'15min'` or `'0.5h'`)
+1) **Auto-transition** Game can show next cue automatically (with given delay to avoid bombarding user with info)
+1) **Stateful game** Game has variables which can be set and changed by `setter` property
+1) **Templating** Each message goes through `_.template` using current game state
+1) **Conditional transitions** Choice can be hidden or shown depending on game state
+1) **CSV importer** Author or draft game in any spreadsheet app, export as CSV and convert to deathline format
+1) **Game file validation** Game is validated (for well-formedness) on loading using JSON schema
+
+### Roadmap
+
+- [ ] Extended game correctness validation
+- [ ] Cues inheritance
+- [ ] Procedural generation integration (Improv and/or Tracery)
+- [ ] User input
+- [ ] HTML5 minigames
 
 ## 🕸️ Requirements
 
@@ -17,7 +36,7 @@ It's still in very early stages, but should work.
 
 ## 🎮 Creating games
 
-Test game is located in `games/pushkin.json` (Russian only at the moment). Also take a look at `lib/deathline.ts`, it contains interfaces and types for game.
+Test game is located in `games/test_game.json`, it shows examples of game state, templating, markup and conditional transitions. Also take a look at `lib/deathline.ts`, it contains interfaces and types for game.
 
 Place your game at `games/your_game.json` and run it by adding `GAME_NAME = your_game` to `.env` file.
 
@@ -26,7 +45,7 @@ There's no documentation at the moment, but you can take a look at `./schema.jso
 ## ⌨️ Contributing
 
 Feature requests and bug reports are welcome, as well as sample games. 
-As for code, please make sure your code follows `.editorconfig`, passes `npm run lint` (`npm run lint:fix` if needed) and is compiling. Also be nice:)
+As for code, please make sure your code follows `.editorconfig`, passes `npm run lint` (`npm run lint:fix` if needed) and is compiling. Tests are appreciated. Also be nice:)
 
 ## MIT License
 

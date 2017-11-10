@@ -15,7 +15,7 @@ function nameToPath(gameName: string): string {
     return `./games/${gameName}.json`;
 }
 
-export function loadGame(gameName: string = 'pushkin'): Promise<IGame> {
+export function loadGame(gameName: string = 'test_game'): Promise<IGame> {
     const gameFile = nameToPath(gameName);
 
     function onGameLoaded(contents: Buffer) {

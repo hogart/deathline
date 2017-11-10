@@ -1,8 +1,10 @@
 import Telegraf = require('telegraf');
 import template = require('lodash.template');
 import { TemplateExecutor } from 'lodash';
-import { IAudioCue, IChoice, TCue, IDict, IGame, IImgCue, ITemplateSettings, IUser, TState } from './deathline';
+import { IAudioCue, IChoice, TCue, IGame, IImgCue, ITemplateSettings, IUser, TState, IGameSettings } from './deathline';
 import { restartConfirmation, restartRequest, waitingMessage } from './constants';
+import { runSafeExpression } from './safeExpression';
+import { IDict } from './IDict';
 
 interface IButton {
     action: string;
@@ -37,16 +39,12 @@ export class TextRenderer {
 
         this.markupRenderer = settings.markdown ? Telegraf.Extra.markdown : Telegraf.Extra.HTML;
 
-        this.initTemplateSettings(settings.templateSettings);
+        this.initTemplate(settings.templateSettings);
 
-        this.templateCache = {};
-
-        this.restartRequest = settings.restartRequest || restartRequest;
-        this.restartConfirmation = settings.restartConfirmation || restartConfirmation;
-        this.waitingMessage = settings.waitingMessage || waitingMessage;
+        this.initServiceMessages(settings);
     }
 
-    private initTemplateSettings(templateSettings?: ITemplateSettings<string>): void {
+    private initTemplate(templateSettings?: ITemplateSettings<string>): void {
         this.templateSettings = {};
 
         if (templateSettings) {
@@ -62,6 +60,14 @@ export class TextRenderer {
                 this.templateSettings.evaluate = new RegExp(templateSettings.interpolate);
             }
         }
+
+        this.templateCache = {};
+    }
+
+    private initServiceMessages(settings: IGameSettings) {
+        this.restartRequest = settings.restartRequest || restartRequest;
+        this.restartConfirmation = settings.restartConfirmation || restartConfirmation;
+        this.waitingMessage = settings.waitingMessage || waitingMessage;
     }
 
     private template(str: string, data?: object): string {
@@ -72,34 +78,64 @@ export class TextRenderer {
         return this.templateCache[str](data);
     }
 
-    private button(button: IButton, m: any): any[] {
+    private renderButton(button: IButton, m: any): any[] {
         return [m.callbackButton(button.label, button.action)];
+    }
+
+    private choiceLabel(choice: IChoice, state: TState): string {
+        return this.template(choice.label, state);
+    }
+
+    private choiceAction(cueId: string, index: number): string {
+        return `/cue::${cueId}::${index}`;
+    }
+
+    private choiceButton(choice: IChoice, state: TState, cueId: string, index: number, markup: any): any { // TODO: reduce amount of args
+        return this.renderButton(
+            {
+                label: this.choiceLabel(choice, state),
+                action: this.choiceAction(cueId, index),
+            },
+            markup
+        );
     }
 
     private inlineKeyboard(buttons: IButton[]): any {
         return this.markupRenderer().markup((markup: any) => {
             const keyboard = buttons.map(
-                (button) => this.button(button, markup)
+                (button) => this.renderButton(button, markup)
             );
 
             return markup.inlineKeyboard(keyboard);
         });
     }
 
-    public choices(choices: IChoice[], state: TState): any {
+    public choices(choices: IChoice[], state: TState, cueId: string): any {
         return this.markupRenderer().markup((markup: any) => {
-            const keyboard = choices.map((choice) =>
-                this.button(
-                    {
-                        label: this.template(choice.label, state),
-                        action: `/cue:${choice.id}`,
-                    },
-                    markup
-                )
-            );
+            const renderButton = (choice: IChoice, index: number) => {
+                return this.choiceButton(choice, state, cueId, index, markup);
+            };
+
+            const keyboard = choices.reduce<any[]>((buttons, choice, index) => {
+                if (this.isChoiceVisible(choice, state)) {
+                    buttons.push(renderButton(choice, index));
+                }
+
+                return buttons;
+            }, []);
 
             return markup.inlineKeyboard(keyboard);
         });
+    }
+
+    private isChoiceVisible(choice: IChoice, state: TState): boolean {
+        if (choice.visible !== undefined) {
+            const isVisible = runSafeExpression(choice.visible, state);
+
+            return isVisible;
+        } else {
+            return true;
+        }
     }
 
     private isImgCue(cue: TCue): cue is IImgCue {
@@ -110,10 +146,10 @@ export class TextRenderer {
         return (<IAudioCue>cue).audio !== undefined;
     }
 
-    public cue(cue: TCue, state: TState): IReply {
+    public cue(cue: TCue, state: TState, id: string): IReply {
         const reply: IReply = {
             message: this.template(cue.text, state),
-            buttons: cue.choices ? this.choices(cue.choices, state) : null,
+            buttons: cue.choices ? this.choices(cue.choices, state, id) : null,
         };
 
         if (this.isImgCue(cue)) {

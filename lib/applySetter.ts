@@ -1,7 +1,8 @@
 import get = require('lodash.get');
 import set = require('lodash.set');
-import { IDict, IUser, TSetter, TState } from './deathline';
+import { IUser, TSetter, TState } from './deathline';
 import { clone } from './clone';
+import { IDict } from './IDict';
 
 const setterMap: IDict<Function> = {
     // Math operations

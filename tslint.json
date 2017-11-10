@@ -1,7 +1,7 @@
 {
     "rules": {
         "member-access": true,
-        "no-magic-numbers": [true, 0, 1000],
+        "no-magic-numbers": [true, 0, 10, 1000],
         "no-var-requires": true,
         "typedef-whitespace": [
             true,

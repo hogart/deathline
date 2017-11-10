@@ -1,7 +1,7 @@
 node_modules
 game_db.json
 games/*.json
-!**games/pushkin.json
+!games/test_game.json
 .env
 test/**/*.js
 lib/**/*.js
