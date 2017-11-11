@@ -4,8 +4,9 @@ import * as path from 'path';
 import { readFile as _readFile, writeFile as _writeFile } from 'fs';
 import { promisify } from 'util';
 import parse = require('csv-parse');
-import { IChoice, ICue } from '../lib/deathline';
+import { IChoice, ICue, IImportedCues } from '../lib/deathline';
 import { IDict } from '../lib/IDict';
+import { renderValidationResult, validateCues } from '../lib/validateGame';
 
 const readFile = promisify(_readFile);
 const writeFile = promisify(_writeFile);
@@ -78,17 +79,28 @@ function lineToCue(line: string[]): [string, ICue] {
     return [prefixId(cueId), cue];
 }
 
-function gridToCues(grid: string[][]): IDict<ICue> {
-    return grid.reduce<IDict<ICue>>(
-        (accumulator: IDict<ICue>, line: string[]) => {
+function gridToCues(grid: string[][]): IImportedCues {
+    let start: string = '';
+
+    const cues = grid.reduce<IDict<ICue>>(
+        (accumulator: IDict<ICue>, line: string[], index: number) => {
             const [id, cue] = lineToCue(line);
 
             accumulator[id] = cue;
+
+            if (index === 0) {
+                start = id;
+            }
 
             return accumulator;
         },
         {}
     );
+
+    return {
+        start,
+        cues,
+    };
 }
 
 readFile(inputFile)
@@ -96,7 +108,15 @@ readFile(inputFile)
         return parseP(buffer.toString());
     })
     .then((grid) => {
-        return gridToCues(grid);
+        const importedCues = gridToCues(grid);
+        const validationResult = validateCues(importedCues);
+        renderValidationResult(validationResult);
+
+        if (!validationResult.isValid) {
+            console.log('Proceed writing file anyway');
+        }
+
+        return importedCues;
     })
     .then((cues) => {
         return writeFile(outFile, JSON.stringify(cues, null, '  '));

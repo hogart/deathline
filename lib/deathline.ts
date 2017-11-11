@@ -55,7 +55,14 @@ export interface IGameSettings {
     waitingMessage?: string;
 }
 
-export interface IGame {
+export interface IImportedCues {
+    /** starting cue */
+    start: string;
+    /** cues */
+    cues: IDict<ICue>;
+}
+
+export interface IGame extends IImportedCues {
     /** initial game state */
     state: TState;
     /** game title */
@@ -64,11 +71,8 @@ export interface IGame {
     description: string;
     /** various engine settings */
     settings: IGameSettings;
-    /** starting cue */
-    start: string;
     /** cues */
     cues: IDict<TCue>;
-
     gameFile: string;
 }
 
