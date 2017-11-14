@@ -11,7 +11,7 @@
     "pretest": "tsc",
     "test": "alsatian test/**/*.js --tap",
     "test-cov": "nyc npm test",
-    "posttest": "rimraf lib/**/*.js && rimraf ./deathline.js",
+    "posttest": "rimraf lib/**/*.js && rimraf ./deathline.js && rimraf test/**/*.js",
     "lint": "tslint --project tsconfig.json",
     "lint:fix": "tslint --project tsconfig.json --fix"
   },
