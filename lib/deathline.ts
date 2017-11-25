@@ -27,6 +27,8 @@ export interface ICue {
     choices?: IChoice[];
     /** automatically transit to given cue */
     autoTransition?: ITransition;
+    /** cue id to inherit properties from */
+    extends?: string;
 }
 
 export interface IImgCue extends ICue {
@@ -37,7 +39,7 @@ export interface IAudioCue extends ICue {
     audio: string;
 }
 
-export type TCue = IImgCue | IAudioCue;
+export type TCue = ICue | IImgCue | IAudioCue;
 
 export interface ITemplateSettings<T> {
     escape?: T;

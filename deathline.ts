@@ -69,6 +69,8 @@ loadGame(process.env.GAME_NAME).then((game) => {
     function transitionTo(transition: ITransition, user: IUser): Promise<IReply> {
         const targetCue = game.cues[transition.id];
 
+
+
         if (transition.setter) {
             user.state = applySetter(user, transition.setter);
         }
