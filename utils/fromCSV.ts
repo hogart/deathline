@@ -11,7 +11,7 @@ import { renderValidationResult, validateCues } from '../lib/validateGame';
 const readFile = promisify(_readFile);
 const writeFile = promisify(_writeFile);
 
-const parseP = promisify<string, string[][]>((data: string, cb: IParseCallback) => {
+const parseP = promisify<string, string[][]>((data, cb) => {
     parse(data, {from: 2}, cb);
 });
 

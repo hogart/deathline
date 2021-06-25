@@ -1,4 +1,4 @@
-import dotenv = require('dotenv');
+import * as dotenv from 'dotenv';
 import { IReply, TextRenderer } from './lib/TextRenderer';
 import { MediaRenderer } from './lib/MediaRenderer';
 import { createBot } from './lib/createBot';

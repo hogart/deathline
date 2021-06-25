@@ -1,3 +1,1 @@
-export interface IDict<T> {
-    [key: string]: T;
-}
+export type IDict<T> = Record<string, T>;
