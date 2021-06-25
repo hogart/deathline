@@ -26,12 +26,12 @@ export class TextRenderer {
     private game: IGame;
     private markupRenderer: Function;
 
-    private templateSettings: ITemplateSettings<RegExp>;
-    private templateCache: IDict<TemplateExecutor>;
+    private templateSettings: ITemplateSettings<RegExp> = {};
+    private templateCache: IDict<TemplateExecutor> = {};
 
-    private restartRequest: string;
-    private restartConfirmation: string;
-    private waitingMessage: string;
+    private restartRequest: string = restartRequest;
+    private restartConfirmation: string = restartConfirmation;
+    private waitingMessage: string = waitingMessage;
 
     constructor(game: IGame) {
         this.game = game;
@@ -45,8 +45,6 @@ export class TextRenderer {
     }
 
     private initTemplate(templateSettings?: ITemplateSettings<string>): void {
-        this.templateSettings = {};
-
         if (templateSettings) {
             if (templateSettings.escape) {
                 this.templateSettings.escape = new RegExp(templateSettings.escape);
@@ -60,14 +58,12 @@ export class TextRenderer {
                 this.templateSettings.evaluate = new RegExp(templateSettings.interpolate);
             }
         }
-
-        this.templateCache = {};
     }
 
     private initServiceMessages(settings: IGameSettings) {
-        this.restartRequest = settings.restartRequest || restartRequest;
-        this.restartConfirmation = settings.restartConfirmation || restartConfirmation;
-        this.waitingMessage = settings.waitingMessage || waitingMessage;
+        this.restartRequest = settings.restartRequest || this.restartRequest;
+        this.restartConfirmation = settings.restartConfirmation || this.restartConfirmation;
+        this.waitingMessage = settings.waitingMessage || this.waitingMessage;
     }
 
     private template(str: string, data?: object): string {

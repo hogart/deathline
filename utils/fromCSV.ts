@@ -12,7 +12,9 @@ const readFile = promisify(_readFile);
 const writeFile = promisify(_writeFile);
 
 const parseP = promisify<string, string[][]>((data, cb) => {
-    parse(data, {from: 2}, cb);
+    parse(data, {from: 2}, (err, res) => {
+        cb(err as any, res);
+    });
 });
 
 const projectRoot = path.resolve(__dirname, '..');
